@@ -75,7 +75,7 @@ $query_builder = TRUE;
 
 $db['default'] = array(
 	'dsn'	   => 'BD_Mapa', //Nome da conexão
-	'hostname' => 'localhost:3308',  //Servidor onde está o banco de dados
+	'hostname' => 'localhost:3399',  //Servidor onde está o banco de dados
 	'username' => 'root', //Usuário do banco de dados
 	'password' => '', //Caso possua, a senha do banco de dados
 	'database' => 'mapa', //Nome do banco de dados criado

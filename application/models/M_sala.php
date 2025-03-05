@@ -52,12 +52,12 @@ class M_sala extends CI_Model
             //Query para consultar dados de acordo com os parâmetros passado
             $sql = "select * from tbl_sala where codigo = $codigo";
 
-            $retorno = $this->db->query($sql);
+            $retornoSala = $this->db->query($sql);
 
             //Verificar se a consulta ocorreu com sucesso
             if ($retornoSala -> num_rows() > 0) {
                 $linha = $retornoSala->row();
-                if (trim($linha->$estatus) == "D") {
+                if (trim($linha->estatus) == "D") {
                     $dados = array(
                         'codigo' => 7,
                         'msg' => 'Sala desativada no sistema, caso precise reativar a mesma,
@@ -93,7 +93,7 @@ class M_sala extends CI_Model
     {
         try {
             //Query para consultar dados de acordo com os parâmetros passados
-            $sql = "select * from tbl_sala where estatus = '";
+            $sql = "select * from tbl_sala where estatus = '' ";
 
             if (trim($codigo) != '') {
                 $sql = $sql . " and codigo = $codigo ";
@@ -112,6 +112,7 @@ class M_sala extends CI_Model
             }
 
             $sql = $sql . " order by codigo ";
+
             $retorno = $this->db->query($sql);
 
             //Verificar se a consulta ocorreu com sucesso
@@ -172,7 +173,7 @@ class M_sala extends CI_Model
                 $this->db->query($queryFinal);
 
                 //Verificar se a atualização ocorreu com sucesso
-                if ($this->db->affected_row() > 0) {
+                if ($this->db->affected_rows() > 0) {
                     $dados = array(
                         'codigo' => 1,
                         'msg' => 'Sala atualizada corretamente.'

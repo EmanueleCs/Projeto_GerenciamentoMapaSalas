@@ -76,9 +76,9 @@ class Horario extends CI_Controller {
 
             if (verificarParam($resultado, $lista) == 1) {
                 //Fazendo os setters
-                $this -> setDescricao($resultado->$descricao);
-                $this -> setHoraInicial($resultado->$horaInicial);
-                $this -> setHoraFinal($resultado->$horaFinal);
+                $this -> setDescricao($resultado->descricao);
+                $this -> setHoraInicial($resultado->horaInicial);
+                $this -> setHoraFinal($resultado->horaFinal);
 
                 //Faremos uma validacao para sabermos se todos os dados foram enviados
                 if (trim($this->getDescricao()) == '') {
@@ -146,7 +146,7 @@ class Horario extends CI_Controller {
                 $this->load->model('M_horario');
 
                 //atributo $retorno recebe array com informacoes da consulta dos dados
-                $retorno = $this->M_horario->consulta($this->getCodigo(),
+                $retorno = $this->M_horario->consultar($this->getCodigo(),
                                                     $this->getDescricao(),
                                                     $this->getHoraInicial(),
                                                     $this->getHoraFinal());
@@ -203,8 +203,8 @@ class Horario extends CI_Controller {
                                     'msg' => 'Codigo não informado.');
                     //Descricao, hora inicial e hora final 
                     //pelo menos 1 deles precisa ser informado.
-                }elseif (trim($this->getDescricao() == '' && $this->getHoraInicial == ''
-                        && $this->getHoraFinal == '')) {
+                }elseif (trim($this->getDescricao() == '' && $this->getHoraInicial() == ''
+                        && $this->getHoraFinal() == '')) {
                     $retorno = array('codigo' => 3,
                                     'msg' => 'Pelo menos um parametro precisa ser 
                                     passado para atualizacao');

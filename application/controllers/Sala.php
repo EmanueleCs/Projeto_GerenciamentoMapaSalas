@@ -132,7 +132,7 @@ class Sala extends CI_Controller{
                 "capacidade" => '0'
             );
 
-            if (verificaraParam($resultado, $lista) == 1){
+            if (verificarParam($resultado, $lista) == 1){
                 $this -> setCodigo($resultado -> codigo);
                 $this -> setDescricao($resultado -> descricao);
                 $this -> setAndar($resultado -> andar);
@@ -158,6 +158,9 @@ class Sala extends CI_Controller{
                             'msg' => 'ATENÇÃO: O seguinte erro aconteceu ->', 
                             $e->getMessage());
         }
+
+        //retorno no formato json
+        echo json_encode($retorno);
     }
 
     public function alterar(){

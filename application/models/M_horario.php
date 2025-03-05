@@ -118,10 +118,10 @@ class M_horario extends CI_Model{
                 $linha = $retorno->row();
 
                 if (trim($linha->estatus) == "D") {
-                    $dados - array('codigo' => 7,
+                    $dados = array('codigo' => 7,
                                     'msg' => 'Horario desativado no sistema.');
                 }else {
-                    $dados - array('codigo' => 1,
+                    $dados = array('codigo' => 1,
                                     'msg' => 'Consulta efetuada com sucesso.',
                                     'dados' => $retorno->result());
                 }
