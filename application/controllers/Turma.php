@@ -1,12 +1,12 @@
 <?php 
 defined('BASEPATH') OR exit('NO direct script acess allowed');
 
-class Sala extends CI_Controller{
+class Turma extends CI_Controller{
     //Atributos privados da classe
     private $codigo;
     private $descricao;
-    private $andar;
     private $capacidade;
+    private $dataInicio;
     private $estatus;
 
     //Getters dos atributos
@@ -14,12 +14,12 @@ class Sala extends CI_Controller{
         return $this->codigo;
     }
 
-    public function getDescricao(){
-        return $this->descricao;
+    public function getDataInicio(){
+        return $this->dataInicio;
     }
 
-    public function getAndar(){
-        return $this->andar;
+    public function getDescricao(){
+        return $this->descricao;
     }
 
     public function getCapacidade(){
@@ -35,12 +35,12 @@ class Sala extends CI_Controller{
         $this->codigo = $codigoFront;
     }
 
-    public function setDescricao($descricaoFront){
-        $this->descricao = $descricaoFront;
+    public function setDataInicio($dataInicio){
+        $this->dataInicio = $dataInicio;
     }
 
-    public function setAndar($andarFront){
-        $this->andar = $andarFront;
+    public function setDescricao($descricaoFront){
+        $this->descricao = $descricaoFront;
     }
 
     public function setCapacidade($capacidadeFront){
@@ -52,55 +52,52 @@ class Sala extends CI_Controller{
     }
 
     public function inserir(){
-        //Codigo, Descricao e Andar
+        //descricao, e capacidade
         //recebidos via JSON e colocados em variáveis
-        //Retornos possiíveis
-        //1 - Sala cadastrada corretamente (Banco)
-        //2 - Faltou informar o codigo da sala (Frontend)
-        //3 - Faltou informar a descricao (Frontend)
-        //4 - Faltou informar o andar (Frontend)
-        //5 - Sala cadastrada no sistema
-        //6 - Houve algum problema no insert da tabela (Banco)
-        //7 - Sala já cadastrada no Sistema
-        try{
-            //Dados recebidos via JSON e colocados em atributos
+        //retornos possíveis:
+        //1 - Turma cadastrada corretamente (banco)
+        //2 - faltou informar a descricao (frontend)
+        //3 - faltou informar a capacidade (frontend)
+        //4 - Faltou informar a data de inicio da turma (frontend)
+        //5 - turma ja cadastrada no sistema
+        //6 - houve algum problema no insert da tabela (banco)
+
+        try {
+            //dados recebidos via json e colocados em atributos
             $json = file_get_contents('php://input');
             $resultado = json_decode($json);
 
             $lista = array(
-                "codigo" => '0',
                 "descricao" => '0',
-                "andar" => '0',
-                "capacidade" => '0'
+                "capacidade" => '0',
+                "dataInicio" => '0'
             );
 
             if (verificarParam($resultado, $lista) == 1) {
                 //Fazendo os setters
-                $this -> setCodigo($resultado -> codigo);
                 $this -> setDescricao($resultado -> descricao);
-                $this -> setAndar($resultado -> andar);
                 $this -> setCapacidade($resultado -> capacidade);
+                $this -> setDataInicio($resultado -> dataInicio);
 
                 //Faremos uma validação para sabermos se todos os dados foram enviados
-                if(trim($this -> getCodigo()) == '' || $this -> getCodigo() == 0){
-                    $retorno = array('codigo' => 2, 'msg' => 'Código não informado.');
+                if (trim($this -> getDescricao()) == ''){
+                    $retorno = array('codigo' => 2,
+                                     'msg' => 'Descrição não informada.');
 
-                }elseif (trim($this -> getDescricao()) == ''){
-                    $retorno = array('codigo' => 3, 'msg' => 'Descrição não informada.');
+                }elseif (trim($this -> getCapacidade()) == '') {
+                    $retorno = array('codigo' => 3, 'msg' => 'Capacidade não informada.');
 
-                }elseif (trim($this -> getAndar()) == '' || trim($this -> getCapacidade()) == 0) {
-                    $retorno = array('codigo' => 4, 'msg' => 'Andar não informado.');
-
-                }elseif (trim($this -> getCapacidade()) == '' || trim($this->getCapacidade()) == 0) {
-                    $retorno = array('codigo' => 5, 'msg' => 'Capacidade não informada.');
+                }elseif (trim($this -> getDataInicio()) == '') {
+                    $retorno = array('codigo' => 4, 'msg' => 'Data de início não informada.');
 
                 }else {
                     //Reaalizo a instânca da Model
-                    $this -> load -> model('M_sala');
+                    $this -> load -> model('M_turma');
 
                     //Atributos $retorno recebe array com informações da validação do acesso
-                    $retorno = $this -> M_sala -> inserir ($this -> getCodigo(), $this -> getDescricao(),
-                                                            $this -> getAndar(), $this -> getCapacidade());
+                    $retorno = $this -> M_turma -> inserir ($this -> getDescricao(),
+                                                            $this -> getCapacidade(),
+                                                            $this -> getDataInicio());
                 };
             }else{
                 $retorno = array(
@@ -116,10 +113,11 @@ class Sala extends CI_Controller{
         }
         //Retorno no formato JSON
         echo json_encode($retorno);
+
     }
 
     public function consultar(){
-        //Código, descrição e tipo (Administrador ou Comum)
+        //Código, descrição e capacidade 
         //recebidos via JSON e colocados
         //em variáveis
         //Retornos possíveis:
@@ -133,25 +131,25 @@ class Sala extends CI_Controller{
             $lista = array(
                 "codigo" => '0',
                 "descricao" => '0',
-                "andar" => '0',
-                "capacidade" => '0'
+                "capacidade" => '0', 
+                "dataInicio" => '0'
             );
 
             if (verificarParam($resultado, $lista) == 1){
                 $this -> setCodigo($resultado -> codigo);
                 $this -> setDescricao($resultado -> descricao);
-                $this -> setAndar($resultado -> andar);
                 $this -> setCapacidade($resultado -> capacidade);
+                $this -> setDataInicio($resultado -> dataInicio);
                 
                 //Realizo a instância da Model
-                $this -> load->model('M_sala');
+                $this -> load->model('M_turma');
 
                 //Atributos $retorno recebe array com informações
                 // da consulta dos dados
-                $retorno = $this -> M_sala -> consultar($this->getCodigo(),
+                $retorno = $this -> M_turma -> consultar($this->getCodigo(),
                                                         $this->getDescricao(),
-                                                        $this->getAndar(),
-                                                        $this->getCapacidade());
+                                                        $this->getCapacidade(),
+                                                        $this->getDataInicio());
             }else{
                 $retorno = array('codigo' => 99,
                                 'msg' => 'Os campos vindos do Frontend não 
@@ -169,12 +167,13 @@ class Sala extends CI_Controller{
     }
 
     public function alterar(){
-        //Código, descrição e andar
+        //Código, descrição e capacidade
         //recebidos via JSON e colocados em variaveis
         //retornos possíveis:
         //1 - dados alterados corretamente (banco)
-        //2 - codigo da sala não informado ou zerado
-        //3 - descrição não informada.
+        //2 - codigo não informado ou zerado
+        //3 - pelo menos um parametro deve ser passado
+        //5 - dados não encontrados (banco)
 
         try {
             $json = file_get_contents('php://input');
@@ -184,39 +183,39 @@ class Sala extends CI_Controller{
             $lista = array(
                 "codigo" => '0',
                 "descricao" => '0',
-                "andar" => '0',
-                "capacidade" => '0'
+                "capacidade" => '0',
+                "dataInicio" => '0'
             );
 
             if (verificarParam($resultado, $lista) == 1) {
                 //Fazendo os setters
                 $this -> setCodigo($resultado->codigo);
                 $this -> setDescricao($resultado->descricao);
-                $this -> setAndar($resultado -> andar);
                 $this -> setCapacidade($resultado -> capacidade);
+                $this -> setDataInicio($resultado -> dataInicio);
 
-                //Validando para tipo de usuário que deverá ser administrador, comum ou vazio
+                //Validacao para passagem de atributo ou campo vazio
                 if (trim($this->getCodigo()) == '') {
                     $retorno = array(
                         'codigo' => 2,
                         'msg' => 'Código não informado'
                     );
-                    // Descricao, Andar ou Capacidade, pelo menos 1 deles precisa ser informado
-                }elseif (trim($this->getDescricao()) == '' && trim($this->getAndar()) == '' &&
-                            trim($this -> getCapacidade()) == '') {
+                    // Nome senha ou tipo usuario, pelo menos 1 deles precisa ser informado
+                }elseif (trim($this->getDescricao()) == '' && trim($this->getCapacidade()) == '' &&
+                            trim($this -> getDataInicio()) == '') {
 
                                 $retorno = array('codigo' => 3,
                                 'msg' => 'Pelo menos um parâmetro precisa ser passado para atualização');
                 }else{
                     //Realizo a instância da Model
-                    $this -> load->model('M_sala');
+                    $this -> load->model('M_turma');
 
                     //Atributo $retorno recebe array com informações
                     // da alteração dos dados
-                    $retorno = $this -> M_sala-> alterar($this -> getCodigo(),
+                    $retorno = $this -> M_turma-> alterar($this -> getCodigo(),
                                                 $this -> getDescricao(),
-                                                $this -> getAndar(),
-                                                $this -> getCapacidade());
+                                                $this -> getCapacidade(),
+                                                $this -> getDataInicio());
                 }
             }else{
                 $retorno = array(
@@ -233,20 +232,20 @@ class Sala extends CI_Controller{
         }
         //retorno no formato JSON
         echo json_encode($retorno);
-
     }
 
     public function desativar(){
-        //Usuário recebido via JSON e colocado em variável
+        //Codigo da turma recebido via JSON e colocado em variável
         //Retorno possíveis:
-        //1 - Sala desativada corretamente (Banco)
-        //2 - Código da Sala não informado
+        //1 - Turma desativada corretamente (Banco)
+        //2 - Código da turma não informado
         //5 - Houve algum problema na desativação da sala
         //6 - Dados não encontrados (Banco)
 
         try{
             $json = file_get_contents('php://input');
             $resultado = json_decode($json);
+
             //Array com os dados que deverão vir do Front
             $lista = array(
                 "codigo" => '0'
@@ -265,10 +264,10 @@ class Sala extends CI_Controller{
                                     'msg' => 'Código não informado');
                 }else{
                     //Realizo a instância da Mode
-                    $this -> load -> model('M_sala');
+                    $this -> load -> model('M_turma');
 
                     //Atributo $retorno recebe array com informações
-                    $retorno = $this->M_sala->desativar($this -> getCodigo());
+                    $retorno = $this->M_turma->desativar($this -> getCodigo());
                 }
 
             }else{
