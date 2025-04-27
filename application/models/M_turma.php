@@ -87,7 +87,7 @@ class M_turma extends CI_Model
         return $dados;
     }
 
-    private function consultaTurmaCod($codigo)
+    public function consultaTurmaCod($codigo)
     {
         try {
             //Query para consultar dados de acordo com os parâmetros passados
